@@ -1,0 +1,80 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+public class MainFrame extends JFrame {
+
+    private JButton startButton;
+    private JButton stopButton;
+    private ExecutorService executor;
+
+    public MainFrame() {
+        super("Thread Pool Example");
+
+        startButton = new JButton("Start");
+        stopButton = new JButton("Stop");
+
+        startButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (executor == null || executor.isShutdown()) {
+                    executor = Executors.newFixedThreadPool(10); // Imposta un pool di 10 thread
+                    startThreadInPool(executor);
+                }
+            }
+        });
+
+        stopButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (executor != null) {
+                    executor.shutdownNow(); // Prova a fermare tutti i thread attivi e futuri
+                    try {
+                        if (!executor.awaitTermination(1000, TimeUnit.MILLISECONDS)) {
+                            System.out.println("Some tasks did not terminate yet");
+                        }
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                    executor = null;
+                }
+            }
+        });
+
+        this.setLayout(new FlowLayout());
+        this.add(startButton);
+        this.add(stopButton);
+
+        this.setSize(300, 100);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+    }
+
+    private void startThreadInPool(ExecutorService executor) {
+        executor.submit(new Runnable() {
+            public void run() {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        System.out.println("Thread instruction 1 running: " + Thread.currentThread().getId());
+                        Thread.sleep(3000); // Simula un lavoro di 1 secondo
+                        System.out.println("Thread instruction 2 running: " + Thread.currentThread().getId());
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt(); // Assicurati che l'interruzione sia correttamente gestita
+                        System.out.println("Thread was interrupted, finishing...");
+                    }
+                    System.out.println("Thread was interrupted, finishing...");
+                }
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new MainFrame();
+            }
+        });
+    }
+}

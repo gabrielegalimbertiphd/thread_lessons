@@ -1,0 +1,65 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class MainFrame extends JFrame {
+
+    private JButton startButton;
+    private JButton stopButton;
+    private Thread backgroundThread;
+
+    public MainFrame() {
+        super("Start Stop Application");
+
+        startButton = new JButton("Start");
+        stopButton = new JButton("Stop");
+
+        startButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (backgroundThread == null) {
+                    backgroundThread = new Thread(new Runnable() {
+                        public void run() {
+                            runLongProcess();
+                        }
+                    });
+                    backgroundThread.start();
+                }
+            }
+        });
+
+        stopButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (backgroundThread != null) {
+                    backgroundThread.interrupt();
+                    backgroundThread = null;
+                }
+            }
+        });
+
+        this.setLayout(new FlowLayout());
+        this.add(startButton);
+        this.add(stopButton);
+
+        this.setSize(300, 100);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+    }
+
+    private void runLongProcess() {
+        try {
+            // Simulate a long-running process
+            Thread.sleep(10000);  // Sleep for 10 seconds
+        } catch (InterruptedException e) {
+            System.out.println("Thread was interrupted");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new MainFrame();
+            }
+        });
+    }
+}
