@@ -1,0 +1,9 @@
+
+public class Main {
+	public static void main(String[] args) {
+		System.out.println("prova");
+		
+		MyThreads thread = new MyThreads();
+        thread.start();  // Avvia il thread
+	}
+}

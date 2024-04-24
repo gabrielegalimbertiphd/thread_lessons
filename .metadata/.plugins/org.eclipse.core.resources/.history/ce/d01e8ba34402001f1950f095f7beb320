@@ -1,0 +1,9 @@
+
+class MyThreads extends Thread {
+    public void run() {
+        System.out.println("Thread running: " + Thread.currentThread().getId());
+        
+        MyThread thread = new MyThread();
+        thread.start();  // Avvia il thread
+    }
+}

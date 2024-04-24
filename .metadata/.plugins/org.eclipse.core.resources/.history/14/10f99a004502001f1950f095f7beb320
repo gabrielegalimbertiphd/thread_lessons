@@ -1,0 +1,24 @@
+
+
+class MyRunnable implements Runnable {
+    public void run() {
+        System.out.println("Thread running: " + Thread.currentThread().getId());
+    }
+}
+
+public class Main {
+	public static void main(String[] args) {
+		System.out.println("prova");
+		
+		MyThreads myThread = new MyThreads();
+		myThread.start();  // Avvia il thread
+        
+        Thread thread = new Thread(new MyRunnable());
+        thread.start();  // Avvia il thread
+        while(true) {
+        	thread = new Thread(new MyRunnable());
+        	thread.start();  // Avvia il thread
+        }
+	}
+}
+
