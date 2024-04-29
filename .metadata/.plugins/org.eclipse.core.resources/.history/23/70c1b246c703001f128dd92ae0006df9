@@ -1,0 +1,22 @@
+
+public class Veicolo extends Thread {
+
+	private final Casello casello;
+	private final int chilometri;
+	
+	public Veicolo(Casello casello, int chilometri) {
+		this.casello = casello;
+		this.chilometri = chilometri;
+	}
+	
+	@Override
+	public void run() {
+		try {
+			Thread.sleep(chilometri*40);
+			casello.processaVeicolo(chilometri);			
+		} catch(InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+	}
+	
+}

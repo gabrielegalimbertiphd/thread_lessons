@@ -1,0 +1,24 @@
+
+public class VeicoloConILock extends Thread {
+
+	private final Casello casello;
+	private final int chilometri;
+	
+	public Veicolo(Casello casello, int chilometri) {
+		this.casello = casello;
+		this.chilometri = chilometri;
+	}
+	
+	@Override
+	public void run() {
+		try {
+			System.out.println("Veicolo "+Thread.currentThread().getId()+" sta viaggiando");
+			Thread.sleep(chilometri*40);
+			casello.processaVeicolo(chilometri);			
+		} catch(InterruptedException e) {
+			System.out.println("Veicolo "+Thread.currentThread().getId()+" finisce di pagare");
+			Thread.currentThread().interrupt();
+		}
+	}
+	
+}

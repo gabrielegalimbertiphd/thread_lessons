@@ -1,0 +1,18 @@
+import java.util.Random;
+
+public class esercizioCaselliVeicoli {
+	
+	public static void main(String[] args) {
+		int N = 5;
+		double T=0.05;
+		int V = 10;
+		Casello casello = new Casello(N,T);
+		
+		for(int i = 0; i<V; i++) {
+			int chilometri = new Random().nextInt(51)+50;
+			Veicolo veicolo = new Veicolo(casello, chilometri);
+			veicolo.start();
+		}
+	}
+	
+}

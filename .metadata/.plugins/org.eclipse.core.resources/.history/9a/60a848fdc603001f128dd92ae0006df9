@@ -1,0 +1,41 @@
+import java.util.Random;
+import java.util.concurrent.Semaphore;
+
+public class Casello {
+	private final Semaphore[] porte;
+	private double incasso = 0; // VARIABILE CONDIVISA
+	private final double tariffa;
+	
+	public Casello(int numeroPorte, double tariffa) {
+		System.out.println("Creo il casello");
+		this.tariffa = tariffa;
+		this.porte = new Semaphore[numeroPorte];
+		for(int i = 0; i<numeroPorte; i++) {
+			this.porte[i]=new Semaphore(1);
+		}
+	}
+	
+	public void processaVeicolo(int chilometri) {
+		int indicePorta = new Random().nextInt(porte.length);
+		System.out.println("Veicolo si accoda a porta "+String.valueOf(indicePorta));
+		try {
+			porte[indicePorta].acquire();
+			System.out.println("Veicolo prende la porta "+String.valueOf(indicePorta));
+			double pedaggio = chilometri*tariffa;
+			Thread.sleep(new Random().nextInt(4)+3);
+			synchronized(this) {
+				System.out.println("Veicolo paga");
+				incasso+=pedaggio;
+			}
+		} catch(InterruptedException e) {
+			Thread.currentThread().interrupt();
+		} finally {
+			System.out.println("Veicolo lascia la porta "+String.valueOf(indicePorta));
+			porte[indicePorta].release();
+		}
+	}
+	
+	public synchronized double getIncasso() {
+		return incasso;
+	}
+}
